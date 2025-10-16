@@ -56,6 +56,7 @@ export class AuthController {
    **************/
   @Post('verify-otp')
   async verifyOtp(@Body() body: any, @Res() res: Response) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     const result = await this.authService.verifyResetOtp(body.email, body.otp);
     sendResponse(res, {
       statusCode: 200,

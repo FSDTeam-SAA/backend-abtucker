@@ -8,12 +8,12 @@ export class EmailService {
   constructor() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || '',
-      port: Number(process.env.SMTP_PORT ?? 587),
+      host: 'smtp.gmail.com',
+      port: Number(587),
       secure: false, // true if using 465
       auth: {
-        user: process.env.SMTP_USER || '',
-        pass: process.env.SMTP_PASS || '',
+        user: 'sajjadhossainx0@gmail.com',
+        pass: 'zsuxzybbpkxiibfd',
       },
     });
   }
