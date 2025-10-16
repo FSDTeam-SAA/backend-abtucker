@@ -19,8 +19,6 @@ export class FormSubmissionsService {
   async create(dto: CreateFormSubmissionDto, files?: Express.Multer.File[]) {
     let photoUrls: string[] = [];
 
-    console.log(2);
-
     if (files && files.length > 0) {
       const result = await this.uploadService.uploadImages(files);
       if (result instanceof Error) {
