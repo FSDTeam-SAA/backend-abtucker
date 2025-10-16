@@ -47,4 +47,19 @@ export class FormSubmissionsService {
     }
     return { message: 'Deleted successfully' };
   }
+
+  // form-submissions.service.ts
+  async updateStatus(id: string, status: 'active' | 'deactivate') {
+    const submission = await this.formSubmissionModel.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }, // return the updated document
+    );
+
+    if (!submission) {
+      throw new NotFoundException('Form submission not found');
+    }
+
+    return submission;
+  }
 }

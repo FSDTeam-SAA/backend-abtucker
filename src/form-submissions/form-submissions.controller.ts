@@ -7,10 +7,12 @@ import {
   Body,
   UploadedFiles,
   UseInterceptors,
+  Patch,
 } from '@nestjs/common';
 import { FormSubmissionsService } from './form-submissions.service';
 import { CreateFormSubmissionDto } from './dto/create-form-submission.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
 @Controller('form-submissions')
 export class FormSubmissionsController {
@@ -35,5 +37,10 @@ export class FormSubmissionsController {
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.formSubmissionsService.delete(id);
+  }
+
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
+    return this.formSubmissionsService.updateStatus(id, dto.status);
   }
 }
