@@ -1,45 +1,41 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class EmailService {
-  private readonly logger = new Logger(EmailService.name);
-  private readonly sesClient: SESClient;
+  private transporter: nodemailer.Transporter;
 
   constructor() {
-    this.sesClient = new SESClient({
-      region: process.env.AWS_REGION || 'us-east-1',
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || '',
+      port: Number(process.env.SMTP_PORT ?? 587),
+      secure: false, // true if using 465
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
       },
     });
   }
 
-  async sendBulkEmail(
-    toAddresses: string[],
-    subject: string,
-    htmlBody: string,
-    textBody?: string,
-  ): Promise<void> {
-    const command = new SendEmailCommand({
-      Source: process.env.SES_FROM_EMAIL!, // e.g. no-reply@yourdomain.com
-      Destination: { ToAddresses: toAddresses },
-      Message: {
-        Subject: { Data: subject },
-        Body: {
-          Html: { Data: htmlBody },
-          ...(textBody ? { Text: { Data: textBody } } : {}),
-        },
-      },
-    });
-
+  async sendOtpMail(to: string, otp: string) {
     try {
-      const response = await this.sesClient.send(command);
-      this.logger.log(`SES message sent: ${response.MessageId}`);
-    } catch (err) {
-      this.logger.error('SES send failed', err);
-      throw err;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+      await this.transporter.sendMail({
+        from: `"No Reply" <${process.env.SMTP_USER}>`,
+        to,
+        subject: 'Password Reset OTP',
+        html: `
+          <div>
+            <h3>Your OTP Code</h3>
+            <p style="font-size: 20px; font-weight: bold;">${otp}</p>
+            <p>This OTP will expire in 10 minutes.</p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Failed to send email');
     }
   }
 }
