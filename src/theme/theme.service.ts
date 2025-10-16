@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Theme, ThemeDocument } from './theme.schema';
-import { CreateThemeDto } from './theme.dto';
+import { CreateThemeDto } from './dto/theme.dto';
 import { UploadService } from '../upload/upload.service';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ThemeService {
   ) {}
 
   async getTheme(): Promise<Theme> {
-    return this.themeModel.findOne().exec();
+    return this.themeModel.findOne().exec() as Promise<Theme>;
   }
 
   async createOrUpdateTheme(

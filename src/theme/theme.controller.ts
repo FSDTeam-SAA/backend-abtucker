@@ -7,7 +7,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { ThemeService } from './theme.service';
-import { CreateThemeDto } from './theme.dto';
+import { CreateThemeDto } from './dto/theme.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('theme')

@@ -1,5 +1,4 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class CreateThemeDto {
   @IsArray()
