@@ -1,9 +1,12 @@
 import { v2 as cloudinary } from 'cloudinary';
+import { ConfigService } from '@nestjs/config';
+
+const configService = new ConfigService();
 
 cloudinary.config({
-  cloud_name: 'ddtuyxcsl',
-  api_key: '155594432527689',
-  api_secret: 'fw86uLN2JW_S9tYxb69R48Fym2k',
+  cloud_name: configService.get<string>('CLOUDINARY_CLOUD_NAME'),
+  api_key: configService.get<string>('CLOUDINARY_API_KEY'),
+  api_secret: configService.get<string>('CLOUDINARY_API_SECRET'),
 });
 
 export default cloudinary;
