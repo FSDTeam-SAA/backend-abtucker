@@ -1,19 +1,20 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: Number(587),
+      host: configService.get<string>('SMTP_HOST'),
+      port: configService.get<number>('SMTP_PORT'),
       secure: false, // true if using 465
       auth: {
-        user: 'sajjadhossainx0@gmail.com',
-        pass: 'zsuxzybbpkxiibfd',
+        user: configService.get<string>('SMTP_USER'),
+        pass: configService.get<string>('SMTP_PASS'),
       },
     });
   }
