@@ -9,14 +9,20 @@ import { EmailModule } from './email/email.module';
 import { UploadModule } from './upload/upload.module';
 import { FormSubmissionsModule } from './form-submissions/form-submissions.module';
 import { ThemeModule } from './theme/theme.module';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    MongooseModule.forRoot(
-      process.env.MONGO_URI ??
-        'mongodb+srv://fsdteamsaa:YofZqFXb5mFd0xFC@cluster0.wn3crgd.mongodb.net/abtucker?retryWrites=true&w=majority&appName=Cluster0',
-    ),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const uri = configService.get<string>('MONGODB_URL');
+        console.log('🧪 MONGODB_URL =', uri);
+        return { uri };
+      },
+      inject: [ConfigService],
+    }),
     UsersModule,
     AuthModule,
     EmailModule,
