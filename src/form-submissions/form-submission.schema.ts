@@ -17,7 +17,11 @@ export class FormSubmission {
   @Prop({ required: true })
   quote: string;
 
-  @Prop({ required: true, enum: ['active', 'deactivate'], default: 'active' })
+  @Prop({
+    required: true,
+    enum: ['active', 'deactivate'],
+    default: 'deactivate',
+  })
   status: string;
 
   @Prop([String]) // store multiple photo URLs
