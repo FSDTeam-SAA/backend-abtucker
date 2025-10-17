@@ -19,8 +19,8 @@ export class FormSubmission {
 
   @Prop({
     required: true,
-    enum: ['active', 'deactivate'],
-    default: 'deactivate',
+    enum: ['active', 'deactivate', 'pending'],
+    default: 'pending',
   })
   status: string;
 
