@@ -16,38 +16,15 @@ export class ThemeService {
     return this.themeModel.findOne().exec() as Promise<Theme>;
   }
 
-  // async createOrUpdateTheme(
-  //   data: CreateThemeDto,
-  //   logoFile?: Express.Multer.File,
-  // ): Promise<Theme> {
-  //   let logoUrl = data.logo;
-
-  //   if (logoFile) {
-  //     const result = await this.uploadService.uploadImage(logoFile);
-  //     logoUrl = result.secure_url;
-  //   }
-
-  //   const existing = await this.themeModel.findOne();
-  //   if (existing) {
-  //     existing.color = data.color;
-  //     if (logoUrl) existing.logo = logoUrl;
-  //     return existing.save();
-  //   } else {
-  //     const theme = new this.themeModel({
-  //       color: data.color,
-  //       logo: logoUrl,
-  //     });
-  //     return theme.save();
-  //   }
-  // }
-
   async createOrUpdateTheme(
     data: CreateThemeDto,
     logoFile?: Express.Multer.File,
     catImageFiles?: Express.Multer.File[],
+    heroImageFile?: Express.Multer.File,
   ): Promise<Theme> {
     let logoUrl = data.logo;
     let catImageUrls: string[] = data.catImage || [];
+    let heroImageUrl = data.heroImage;
 
     // Upload logo file if provided
     if (logoFile) {
@@ -63,14 +40,20 @@ export class ThemeService {
       catImageUrls = uploadResults.map((res) => res.secure_url);
     }
 
+    // Upload heroImage file if provided
+    if (heroImageFile) {
+      const result = await this.uploadService.uploadImage(heroImageFile);
+      heroImageUrl = result.secure_url;
+    }
+
     const existing = await this.themeModel.findOne();
     if (existing) {
       existing.color = data.color;
-      // existing.backgroundColor = data.backgroundColor;
       existing.backgroundColor =
         data.backgroundColor ?? existing.backgroundColor;
       if (logoUrl) existing.logo = logoUrl;
       if (catImageUrls.length > 0) existing.catImage = catImageUrls;
+      if (heroImageUrl) existing.heroImage = heroImageUrl;
       return existing.save();
     } else {
       const theme = new this.themeModel({
@@ -78,6 +61,7 @@ export class ThemeService {
         logo: logoUrl,
         backgroundColor: data.backgroundColor,
         catImage: catImageUrls,
+        heroImage: heroImageUrl,
       });
       return theme.save();
     }

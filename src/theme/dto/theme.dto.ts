@@ -15,4 +15,6 @@ export class CreateThemeDto {
   @IsArray()
   @IsOptional()
   catImage?: string[];
+
+  heroImage: string;
 }

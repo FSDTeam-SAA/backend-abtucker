@@ -16,6 +16,9 @@ export class Theme {
 
   @Prop({ type: [String] })
   catImage: string[];
+
+  @Prop({ type: String })
+  heroImage: string;
 }
 
 export const ThemeSchema = SchemaFactory.createForClass(Theme);

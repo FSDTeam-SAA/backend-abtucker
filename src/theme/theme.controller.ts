@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ThemeService } from './theme.service';
 import { CreateThemeDto } from './dto/theme.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { sendResponse } from '../common/utils/sendResponse';
 import type { Response } from 'express';
 
@@ -28,42 +28,33 @@ export class ThemeController {
     });
   }
 
-  // @Post()
-  // @UseInterceptors(FileInterceptor('logo'))
-  // async createOrUpdateTheme(
-  //   @Body() body: CreateThemeDto,
-  //   @UploadedFile() logo?: Express.Multer.File,
-  //   @Res() res?: Response,
-  // ) {
-  //   const theme = await this.themeService.createOrUpdateTheme(body, logo);
-  //   if (!res) {
-  //     // handle the case when res is undefined
-  //     return;
-  //   }
-
-  //   return sendResponse(res, {
-  //     statusCode: 200,
-  //     success: true,
-  //     message: 'Theme created/updated successfully',
-  //     data: theme,
-  //   });
-
   @Post()
-  @UseInterceptors(FilesInterceptor('files'))
-  // We are using 'files' for multiple file upload (logo + catImage)
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'logo', maxCount: 1 },
+      { name: 'catImage', maxCount: 10 },
+      { name: 'heroImage', maxCount: 1 }, // heroImage যুক্ত হল
+    ]),
+  )
   async createOrUpdateTheme(
     @Body() body: CreateThemeDto,
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles()
+    files: {
+      logo?: Express.Multer.File[];
+      catImage?: Express.Multer.File[];
+      heroImage?: Express.Multer.File[];
+    },
     @Res() res: Response,
   ) {
-    // Find logo and catImage files from uploaded files
-    const logoFile = files.find((file) => file.fieldname === 'logo');
-    const catImageFiles = files.filter((file) => file.fieldname === 'catImage');
+    const logoFile = files?.logo ? files.logo[0] : undefined;
+    const catImageFiles = files?.catImage || [];
+    const heroImageFile = files?.heroImage ? files.heroImage[0] : undefined;
 
     const theme = await this.themeService.createOrUpdateTheme(
       body,
       logoFile,
       catImageFiles,
+      heroImageFile,
     );
 
     return res.status(200).json({
