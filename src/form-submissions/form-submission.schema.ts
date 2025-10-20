@@ -12,6 +12,9 @@ export class FormSubmission {
   age: number;
 
   @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
   serial: number;
 
   @Prop({ required: true })

@@ -3,13 +3,13 @@ import {
   Get,
   Post,
   UseInterceptors,
-  UploadedFile,
+  UploadedFiles,
   Body,
   Res,
 } from '@nestjs/common';
 import { ThemeService } from './theme.service';
 import { CreateThemeDto } from './dto/theme.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { sendResponse } from '../common/utils/sendResponse';
 import type { Response } from 'express';
 
@@ -28,23 +28,47 @@ export class ThemeController {
     });
   }
 
+  // @Post()
+  // @UseInterceptors(FileInterceptor('logo'))
+  // async createOrUpdateTheme(
+  //   @Body() body: CreateThemeDto,
+  //   @UploadedFile() logo?: Express.Multer.File,
+  //   @Res() res?: Response,
+  // ) {
+  //   const theme = await this.themeService.createOrUpdateTheme(body, logo);
+  //   if (!res) {
+  //     // handle the case when res is undefined
+  //     return;
+  //   }
+
+  //   return sendResponse(res, {
+  //     statusCode: 200,
+  //     success: true,
+  //     message: 'Theme created/updated successfully',
+  //     data: theme,
+  //   });
+
   @Post()
-  @UseInterceptors(FileInterceptor('logo'))
+  @UseInterceptors(FilesInterceptor('files'))
+  // We are using 'files' for multiple file upload (logo + catImage)
   async createOrUpdateTheme(
     @Body() body: CreateThemeDto,
-    @UploadedFile() logo?: Express.Multer.File,
-    @Res() res?: Response,
+    @UploadedFiles() files: Express.Multer.File[],
+    @Res() res: Response,
   ) {
-    const theme = await this.themeService.createOrUpdateTheme(body, logo);
-    if (!res) {
-      // handle the case when res is undefined
-      return;
-    }
+    // Find logo and catImage files from uploaded files
+    const logoFile = files.find((file) => file.fieldname === 'logo');
+    const catImageFiles = files.filter((file) => file.fieldname === 'catImage');
 
-    return sendResponse(res, {
-      statusCode: 200,
+    const theme = await this.themeService.createOrUpdateTheme(
+      body,
+      logoFile,
+      catImageFiles,
+    );
+
+    return res.status(200).json({
       success: true,
-      message: 'Theme created/updated successfully',
+      message: 'Theme created or updated successfully',
       data: theme,
     });
   }

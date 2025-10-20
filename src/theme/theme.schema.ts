@@ -10,6 +10,12 @@ export class Theme {
 
   @Prop({ type: String })
   logo: string;
+
+  @Prop({ type: [String] })
+  backgroundColor: string[];
+
+  @Prop({ type: [String] })
+  catImage: string[];
 }
 
 export const ThemeSchema = SchemaFactory.createForClass(Theme);

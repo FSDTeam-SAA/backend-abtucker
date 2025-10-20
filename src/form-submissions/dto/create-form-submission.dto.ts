@@ -8,6 +8,10 @@ export class CreateFormSubmissionDto {
   @IsNumber()
   age: number;
 
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+
   @IsNumber()
   serial: number;
 
