@@ -10,6 +10,7 @@ import { UploadModule } from './upload/upload.module';
 import { FormSubmissionsModule } from './form-submissions/form-submissions.module';
 import { ThemeModule } from './theme/theme.module';
 import { ConfigService } from '@nestjs/config';
+import { DisplaySideModule } from './display-side/display-side.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ConfigService } from '@nestjs/config';
     UploadModule,
     FormSubmissionsModule,
     ThemeModule,
+    DisplaySideModule,
   ],
   controllers: [AppController],
   providers: [AppService],
