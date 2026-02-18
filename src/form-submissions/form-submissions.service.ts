@@ -37,7 +37,12 @@ export class FormSubmissionsService {
   }
 
   async findAll() {
-    return this.formSubmissionModel.find().sort({ createdAt: -1 });
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+    return this.formSubmissionModel
+      .find({ createdAt: { $gte: twoDaysAgo } })
+      .sort({ createdAt: -1 });
   }
 
   async delete(id: string) {
