@@ -34,7 +34,7 @@
     "class-validator": "^0.14.2",
     "cloudinary": "^1.41.3",
     "dotenv": "^8.2.0",
-    "mongoose": "^8.18.1",
+    "mongoose": "^8.24.2",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
     "node-fetch": "^3.3.2",
